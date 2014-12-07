@@ -7,7 +7,7 @@ cubism.context = function() {
       serverDelay = 5e3,
       clientDelay = 5e3,
       event = d3.dispatch("prepare", "beforechange", "change", "focus"),
-      scale = context.scale = d3.time.scale().range([0, size]),
+      scale = context.scale = d3.scale.linear().range([0, size*step/1000]),
       timeout,
       focus;
 
@@ -17,7 +17,7 @@ cubism.context = function() {
     start0 = new Date(stop0 - size * step);
     stop1 = new Date(Math.floor((now - serverDelay) / step) * step);
     start1 = new Date(stop1 - size * step);
-    scale.domain([start0, stop0]);
+    scale.domain([0, size*step/1000]);
     return context;
   }
 

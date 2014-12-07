@@ -1,5 +1,5 @@
 (function(exports){
-var cubism = exports.cubism = {version: "1.6.0"};
+var cubism = exports.cubism = {version: "1.6.0-linear"};
 var cubism_id = 0;
 function cubism_identity(d) { return d; }
 cubism.option = function(name, defaultValue) {
@@ -29,7 +29,7 @@ cubism.context = function() {
       serverDelay = 5e3,
       clientDelay = 5e3,
       event = d3.dispatch("prepare", "beforechange", "change", "focus"),
-      scale = context.scale = d3.time.scale().range([0, size]),
+      scale = context.scale = d3.scale.linear().range([0, size*step/1000]),
       timeout,
       focus;
 
@@ -39,7 +39,7 @@ cubism.context = function() {
     start0 = new Date(stop0 - size * step);
     stop1 = new Date(Math.floor((now - serverDelay) / step) * step);
     start1 = new Date(stop1 - size * step);
-    scale.domain([start0, stop0]);
+    scale.domain([0, size*step/1000]);
     return context;
   }
 
@@ -1183,10 +1183,7 @@ cubism_contextPrototype.axis = function() {
       scale = context.scale,
       axis_ = d3.svg.axis().scale(scale);
 
-  var formatDefault = context.step() < 6e4 ? cubism_axisFormatSeconds
-      : context.step() < 864e5 ? cubism_axisFormatMinutes
-      : cubism_axisFormatDays;
-  var format = formatDefault;
+  var format = d3.scale.linear().tickFormat(10)
 
   function axis(selection) {
     var id = ++cubism_id,
@@ -1248,9 +1245,6 @@ cubism_contextPrototype.axis = function() {
       "tickFormat");
 };
 
-var cubism_axisFormatSeconds = d3.time.format("%I:%M:%S %p"),
-    cubism_axisFormatMinutes = d3.time.format("%I:%M %p"),
-    cubism_axisFormatDays = d3.time.format("%B %d");
 cubism_contextPrototype.rule = function() {
   var context = this,
       metric = cubism_identity;

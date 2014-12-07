@@ -3,10 +3,7 @@ cubism_contextPrototype.axis = function() {
       scale = context.scale,
       axis_ = d3.svg.axis().scale(scale);
 
-  var formatDefault = context.step() < 6e4 ? cubism_axisFormatSeconds
-      : context.step() < 864e5 ? cubism_axisFormatMinutes
-      : cubism_axisFormatDays;
-  var format = formatDefault;
+  var format = d3.scale.linear().tickFormat(10)
 
   function axis(selection) {
     var id = ++cubism_id,
@@ -68,6 +65,3 @@ cubism_contextPrototype.axis = function() {
       "tickFormat");
 };
 
-var cubism_axisFormatSeconds = d3.time.format("%I:%M:%S %p"),
-    cubism_axisFormatMinutes = d3.time.format("%I:%M %p"),
-    cubism_axisFormatDays = d3.time.format("%B %d");
